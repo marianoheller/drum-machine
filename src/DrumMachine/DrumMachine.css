@@ -1,0 +1,8 @@
+.drum-pad {
+    border-radius: 1em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+
+    cursor: pointer;
+}
