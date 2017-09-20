@@ -2,16 +2,38 @@ import React, { Component } from 'react'
 import { bankOne, bankTwo } from './Banks'
 import './DrumMachine.css'
 
-
+const banks = [ bankOne, bankTwo];
 
 export default class DrumMachine extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            currentBank: bankOne
+        }
+
+        this.onToogleBank = this.onToogleBank.bind(this);
+    }
+
+    onToogleBank() {
+        const { currentBank } = this.state;
+        const currentIndex = banks.findIndex( (b) => b===currentBank);
+        this.setState({
+            currentBank: banks[ (currentIndex+1)%(banks.length) ],
+        })
+    }
+
     render() {
+        const { currentBank } = this.state;
         return (
-            <div id="drum-machine">
-                DRUM MACHINE!!!
-                <Display />
-                <NumPad />
+            <div className="columns" id="drum-machine">
+                <div className="column is-one-third is-offset-one-third">
+                    DRUM MACHINE!!!
+                    <Display />
+                    <NumPad bank={currentBank}/>
+                    <BankChooser onToogle={this.onToogleBank}/>
+                </div>
             </div>
         )
     }
@@ -37,11 +59,13 @@ class NumPad extends Component {
     }
 
     render() {
-        const keys = "Q,W,E,A,S,D,Z,X,C".split(",").reduce( (acc, key, i) => {
+
+        const { bank } = this.props;
+        const keys = bank.map( (b) => b.keyTrigger ).reduce( (acc, key, i) => {
             if ( i%3 === 0 ) acc.push([]);
             acc[acc.length-1].push(key);
             return acc;
-        }, [])
+        }, []);
 
         return (
             <div id="numpadContainer">
@@ -57,13 +81,31 @@ class NumPad extends Component {
                                     onClick={this.handleNumpadClick.bind(this,i+j)}
                                     >
                                         {key}
-                                        <audio src="asd" className="clip" id={key}></audio>
+                                        <audio src={
+                                            bank.find( (b) => b.keyTrigger===key ).url
+                                        } 
+                                        className="clip" 
+                                        id={key} 
+                                        />
                                     </div>
                                 )
                             })}
                         </div>
                     )
                 })}
+            </div>
+        )
+    }
+}
+
+
+class BankChooser extends Component {
+
+    render() {
+        const { onToogle } = this.props;
+        return (
+            <div>
+                <button onClick={onToogle}>ASASD</button>
             </div>
         )
     }
