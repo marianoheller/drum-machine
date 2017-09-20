@@ -33,6 +33,7 @@ export default class DrumMachine extends Component {
         })
     }
 
+
     render() {
         const { currentBank } = this.state;
         return (
@@ -64,18 +65,32 @@ class Display extends Component {
 
 class NumPad extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+        this.handleNumPadPress = this.handleNumPadPress.bind(this);
+    }
+
     
     handleNumPadPress(key) {
         const { onNumPadPress } = this.props;
         return function() {
             const audioElement = this.refs[`audio${key}`];
+            if (!audioElement ) return;
             audioElement.play();
             onNumPadPress(key);
-        }
+        }.bind(this)
     }
 
+
     handleKeyDown(e) {
-        console.log(e);
+        const playAction = this.handleNumPadPress(e.key.toUpperCase());
+        playAction();
+    }
+
+    componentDidMount(){
+        this.numPad.focus();
     }
 
     render() {
@@ -87,7 +102,11 @@ class NumPad extends Component {
         }, []);
 
         return (
-            <div id="numpadContainer"  tabIndex="1" onKeyDown={this.handleKeyDown.bind(this)}>
+            <div id="numpadContainer" 
+            onKeyDown={this.handleKeyDown.bind(this)}  
+            tabIndex="1" 
+            ref={(numPad) => { this.numPad = numPad; }} 
+            >
                 {keys.map( (keyRow,i) => {
                     return (
                         <div className="columns" key={`keyRow${i}`}>
