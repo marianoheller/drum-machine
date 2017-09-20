@@ -10,10 +10,12 @@ export default class DrumMachine extends Component {
         super(props);
 
         this.state = {
-            currentBank: bankOne
+            currentBank: bankOne,
+            currentDisplay: ""
         }
 
         this.onToogleBank = this.onToogleBank.bind(this);
+        this.onNumPadPress  = this.onNumPadPress.bind(this);
     }
 
     onToogleBank() {
@@ -24,14 +26,21 @@ export default class DrumMachine extends Component {
         })
     }
 
+    onNumPadPress(key) {
+        const { currentBank } = this.state;
+        this.setState({
+            currentDisplay: currentBank.find( (b) => b.keyTrigger===key).id,
+        })
+    }
+
     render() {
         const { currentBank } = this.state;
         return (
             <div className="columns" id="drum-machine">
                 <div className="column is-one-third is-offset-one-third">
                     DRUM MACHINE!!!
-                    <Display />
-                    <NumPad bank={currentBank}/>
+                    <Display keyPressed={this.state.currentDisplay} />
+                    <NumPad bank={currentBank} onNumPadPress={this.onNumPadPress}/>
                     <BankChooser onToogle={this.onToogleBank}/>
                 </div>
             </div>
@@ -42,9 +51,11 @@ export default class DrumMachine extends Component {
 
 class Display extends Component {
     render() {
+        const { keyPressed } = this.props;
+
         return(
             <div id="display">
-                Display
+                { keyPressed }
             </div>
         )
     }
@@ -53,13 +64,21 @@ class Display extends Component {
 
 class NumPad extends Component {
 
-    handleNumpadClick(index) {
-        const audio = new Audio(`https://s3.amazonaws.com/freecodecamp/drums/Heater-${index}.mp3`);
-        audio.play();
+    
+    handleNumPadPress(key) {
+        const { onNumPadPress } = this.props;
+        return function() {
+            const audioElement = this.refs[`audio${key}`];
+            audioElement.play();
+            onNumPadPress(key);
+        }
+    }
+
+    handleKeyDown(e) {
+        console.log(e);
     }
 
     render() {
-
         const { bank } = this.props;
         const keys = bank.map( (b) => b.keyTrigger ).reduce( (acc, key, i) => {
             if ( i%3 === 0 ) acc.push([]);
@@ -68,7 +87,7 @@ class NumPad extends Component {
         }, []);
 
         return (
-            <div id="numpadContainer">
+            <div id="numpadContainer"  tabIndex="1" onKeyDown={this.handleKeyDown.bind(this)}>
                 {keys.map( (keyRow,i) => {
                     return (
                         <div className="columns" key={`keyRow${i}`}>
@@ -78,14 +97,15 @@ class NumPad extends Component {
                                     className="drum-pad column is-4" 
                                     key={`key${j}`} 
                                     id={`button${key}`}
-                                    onClick={this.handleNumpadClick.bind(this,i+j)}
+                                    onClick={ this.handleNumPadPress(key).bind(this) }
                                     >
                                         {key}
                                         <audio src={
                                             bank.find( (b) => b.keyTrigger===key ).url
-                                        } 
+                                        }
                                         className="clip" 
-                                        id={key} 
+                                        id={key}
+                                        ref={`audio${key}`}
                                         />
                                     </div>
                                 )
