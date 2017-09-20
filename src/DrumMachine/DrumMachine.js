@@ -103,8 +103,7 @@ class NumPad extends Component {
 
         return (
             <div id="numpadContainer" 
-            onKeyDown={this.handleKeyDown.bind(this)}  
-            tabIndex="1" 
+            onKeyDown={this.handleKeyDown.bind(this)}
             ref={(numPad) => { this.numPad = numPad; }} 
             >
                 {keys.map( (keyRow,i) => {
