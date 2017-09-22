@@ -4,6 +4,7 @@ import './DrumMachine.css'
 
 const banks = [ bankOne, bankTwo];
 
+
 export default class DrumMachine extends Component {
 
     constructor(props) {
