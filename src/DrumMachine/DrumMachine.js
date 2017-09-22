@@ -162,3 +162,5 @@ class BankChooser extends Component {
         )
     }
 }
+
+class VolumeController extends Component
