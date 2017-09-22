@@ -73,6 +73,15 @@ class NumPad extends Component {
         this.handleNumPadPress = this.handleNumPadPress.bind(this);
     }
 
+    componentWillMount()   {
+        document.addEventListener("keydown", this.handleKeyDown, false);
+    }
+   
+   
+    componentWillUnmount() {
+        document.removeEventListener("keydown", this.handleKeyDown, false);
+    }
+
     
     handleNumPadPress(key) {
         const { onNumPadPress } = this.props;
@@ -86,7 +95,12 @@ class NumPad extends Component {
 
 
     handleKeyDown(e) {
-        const playAction = this.handleNumPadPress(e.key.toUpperCase());
+        const { bank } = this.props;
+        const keyObj = bank.find( (b) => b.keyCode===e.keyCode );
+        if( !keyObj ) return;
+        const key = keyObj.keyTrigger;
+        if ( !key ) return;
+        const playAction = this.handleNumPadPress(key);
         playAction();
     }
 
@@ -104,7 +118,6 @@ class NumPad extends Component {
 
         return (
             <div id="numpadContainer" 
-            onKeyDown={this.handleKeyDown.bind(this)}
             ref={(numPad) => { this.numPad = numPad; }} 
             >
                 {keys.map( (keyRow,i) => {
