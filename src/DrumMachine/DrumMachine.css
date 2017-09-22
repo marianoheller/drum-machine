@@ -1,5 +1,22 @@
+#title {
+    font-size: 2em;
+    font-family: 'Gloria Hallelujah', cursive;
+    color: white;
+}
+
+#display {
+    font-family: 'Gloria Hallelujah', cursive;
+    color: white;
+}
+
+#numpadContainer {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(red, green, blue, 1);
+}
+
 .drum-pad {
-    border-radius: 1em;
+    border-radius: 50%;
     border-style: solid;
     border-width: 1px;
     border-color: black;
@@ -7,6 +24,21 @@
     cursor: pointer;
 }
 
-#numpadContainer{
-    outline: none;
+
+#volumeSlider {
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 175px;
+    padding: 0 5px;
+
+    cursor: pointer;
+}
+
+#bankContainer{
+    color: white;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(red, green, blue, 1);
+    cursor: pointer;
 }

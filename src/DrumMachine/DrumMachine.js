@@ -12,11 +12,13 @@ export default class DrumMachine extends Component {
 
         this.state = {
             currentBank: bankOne,
-            currentDisplay: ""
+            currentDisplay: "",
+            volume: 50,
         }
 
         this.onToogleBank = this.onToogleBank.bind(this);
         this.onNumPadPress  = this.onNumPadPress.bind(this);
+        this.onVolumeChange = this.onVolumeChange.bind(this);
     }
 
     onToogleBank() {
@@ -34,16 +36,40 @@ export default class DrumMachine extends Component {
         })
     }
 
+    onVolumeChange(value) {
+        this.setState({
+            volume: value,
+        })
+    }
+
 
     render() {
-        const { currentBank } = this.state;
+        const { currentBank, volume } = this.state;
         return (
             <div className="columns" id="drum-machine">
                 <div className="column is-one-third is-offset-one-third">
-                    DRUM MACHINE!!!
-                    <Display keyPressed={this.state.currentDisplay} />
-                    <NumPad bank={currentBank} onNumPadPress={this.onNumPadPress}/>
-                    <BankChooser onToogle={this.onToogleBank}/>
+                    <h1 id="title">Drum machine</h1>
+                    <div className="columns">
+                        <div className="column is-12">
+                            <Display keyPressed={this.state.currentDisplay} />
+                        </div>
+                    </div>
+                    <div className="columns">
+                        <div className="column is-1">
+                            <VolumeController volume={volume} onVolumeChange={this.onVolumeChange}/>
+                        </div>
+                        <div className="column is-11">
+                            <NumPad volume={volume} bank={currentBank} onNumPadPress={this.onNumPadPress}/>
+                        </div>
+                    </div>
+                    <div className="columns">
+                        <div className="column is-12">
+                            <BankChooser onToogle={this.onToogleBank}/>
+                        </div>
+                    </div>
+                    
+                    
+                    
                 </div>
             </div>
         )
@@ -56,8 +82,7 @@ class Display extends Component {
         const { keyPressed } = this.props;
 
         return(
-            <div id="display">
-                { keyPressed }
+            <div id="display" dangerouslySetInnerHTML={ keyPressed ? {__html: keyPressed} : {__html: '&nbsp;'} } >
             </div>
         )
     }
@@ -84,10 +109,11 @@ class NumPad extends Component {
 
     
     handleNumPadPress(key) {
-        const { onNumPadPress } = this.props;
+        const { onNumPadPress, volume } = this.props;
         return function() {
             const audioElement = this.refs[`audio${key}`];
             if (!audioElement ) return;
+            audioElement.volume = volume/100;
             audioElement.play();
             onNumPadPress(key);
         }.bind(this)
@@ -117,7 +143,7 @@ class NumPad extends Component {
         }, []);
 
         return (
-            <div id="numpadContainer" 
+            <div id="numpadContainer"
             ref={(numPad) => { this.numPad = numPad; }} 
             >
                 {keys.map( (keyRow,i) => {
@@ -156,11 +182,27 @@ class BankChooser extends Component {
     render() {
         const { onToogle } = this.props;
         return (
-            <div>
-                <button onClick={onToogle}>ASASD</button>
+            <div onClick={onToogle} id="bankContainer">
+                Toogle bank
             </div>
         )
     }
 }
 
-class VolumeController extends Component
+class VolumeController extends Component {
+
+    handleValueChange(e) {
+        e.preventDefault();
+        const { onVolumeChange } = this.props;
+        onVolumeChange(e.target.value);
+    }
+
+    render() {
+        const { volume } = this.props;
+        return (
+            <div className="volumeContainer">
+                <input id="volumeSlider" type="range"  orient="vertical" min="0" max="100" step="1" value={volume} onChange={this.handleValueChange.bind(this)}/>
+            </div>
+        )
+    }
+}
