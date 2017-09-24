@@ -49,24 +49,18 @@ export default class DrumMachine extends Component {
             <div className="columns" id="drum-machine">
                 <div className="column is-one-third is-offset-one-third">
                     <h1 id="title">Drum machine</h1>
-                    <div className="columns">
-                        <div className="column is-12">
-                            <Display keyPressed={this.state.currentDisplay} />
-                        </div>
+                    <div className="column is-12">
+                        <Display keyPressed={this.state.currentDisplay} />
                     </div>
-                    <div className="columns">
-                        <div className="column is-1">
-                            <VolumeController volume={volume} onVolumeChange={this.onVolumeChange}/>
-                        </div>
-                        <div className="column is-11">
-                            <NumPad volume={volume} bank={currentBank} onNumPadPress={this.onNumPadPress}/>
-                        </div>
+                    <div className="column is-12">
+                        <VolumeController volume={volume} onVolumeChange={this.onVolumeChange}/>
                     </div>
-                    <div className="columns">
-                        <div className="column is-12">
-                            <BankChooser onToogle={this.onToogleBank}/>
-                        </div>
+                    <div className="column is-12">
+                        <NumPad volume={volume} bank={currentBank} onNumPadPress={this.onNumPadPress}/>
                     </div>
+                    <div className="column is-12">
+                    <BankChooser onToogle={this.onToogleBank}/>
+                </div>
                     
                     
                     
@@ -148,7 +142,7 @@ class NumPad extends Component {
             >
                 {keys.map( (keyRow,i) => {
                     return (
-                        <div className="columns" key={`keyRow${i}`}>
+                        <div className="columns is-mobile" key={`keyRow${i}`}>
                             {keyRow.map( (key,j) => {
                                 return (
                                     <div 
