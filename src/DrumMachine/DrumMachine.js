@@ -72,11 +72,15 @@ export default class DrumMachine extends Component {
 
 
 class Display extends Component {
+
     render() {
         const { keyPressed } = this.props;
 
         return(
-            <div id="display" dangerouslySetInnerHTML={ keyPressed ? {__html: keyPressed} : {__html: '&nbsp;'} } >
+            <div id="display">
+                <div id="displayText" className={`${keyPressed ? "" : "blink"}`} >
+                    {keyPressed ? keyPressed : "Press a button!"}
+                </div>
             </div>
         )
     }
