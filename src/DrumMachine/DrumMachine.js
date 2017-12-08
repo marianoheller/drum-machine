@@ -45,6 +45,7 @@ export default class DrumMachine extends Component {
 
     render() {
         const { currentBank, volume } = this.state;
+        const currentIndex = banks.findIndex( (b) => b===currentBank);
         return (
             <div className="columns" id="drum-machine">
                 <div className="column is-one-third is-offset-one-third">
@@ -59,7 +60,7 @@ export default class DrumMachine extends Component {
                         <NumPad volume={volume} bank={currentBank} onNumPadPress={this.onNumPadPress}/>
                     </div>
                     <div className="column is-12">
-                    <BankChooser onToogle={this.onToogleBank}/>
+                    <BankChooser onToogle={this.onToogleBank} currentIndex={currentIndex}/>
                 </div>
                     
                     
@@ -178,10 +179,25 @@ class NumPad extends Component {
 class BankChooser extends Component {
 
     render() {
-        const { onToogle } = this.props;
+        const { onToogle, currentIndex } = this.props;
         return (
-            <div onClick={onToogle} id="bankContainer">
-                Toogle bank
+            <div>
+                <div className="columns" id="bankIndicatorContainer">
+                    { banks.map( (b,i) => {
+                        return <div 
+                        key={`bankIndicatorContainer${i}`} 
+                        className={`
+                        bankIndicatorContainer
+                        column
+                        is-${Math.floor(12/banks.length)}
+                        `}>
+                            <div className={`bankIndicator ${i===currentIndex ? "bankIndicatorActive" : ""}`} ></div>
+                        </div>
+                    })}
+                </div>
+                <div onClick={onToogle} id="bankContainer">
+                    Toogle bank
+                </div>
             </div>
         )
     }
